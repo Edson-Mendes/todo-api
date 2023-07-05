@@ -6,6 +6,7 @@ spring:
       username: user
       password: 1234
       database: todo-db
+      uri: mongodb://user:1234@localhost:27017/todo-db
 
 logging:
   level:

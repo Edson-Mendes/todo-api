@@ -48,4 +48,14 @@ public class User {
     return Objects.hash(id);
   }
 
+  public void addAuthority(String role) {
+    if (role == null || !role.startsWith("ROLE_")) {
+      throw new IllegalArgumentException("Invalid role: " + role);
+    }
+    if (authorities == null) {
+      authorities = new HashSet<>();
+    }
+
+    authorities.add(role);
+  }
 }

@@ -4,12 +4,19 @@ import com.emendes.todoapi.dto.request.RegisterUserRequest;
 import com.emendes.todoapi.dto.response.UserResponse;
 import com.emendes.todoapi.mapper.UserMapper;
 import com.emendes.todoapi.model.User;
+import com.emendes.todoapi.repository.UserRepository;
 import com.emendes.todoapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import static com.emendes.todoapi.security.SecurityConfig.ROLE_USER;
 
 /**
  * Implementação de {@link UserService}.
@@ -20,10 +27,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserServiceImpl implements UserService {
 
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
 
   /**
-   * @throws ResponseStatusException se RegisterUserRequest.password e RegisterUserRequest.confirmPassword
-   *                                 não corresponderem.
+   * @throws ResponseStatusException se RegisterUserRequest.password e RegisterUserRequest.confirmPassword não correspondem.
+   *                                 Ou caso o email informado já esteja associado a um User.
    */
   @Override
   public UserResponse register(RegisterUserRequest registerUserRequest) {
@@ -32,15 +41,19 @@ public class UserServiceImpl implements UserService {
           HttpStatusCode.valueOf(400),
           "password and confirm_password do not match");
     }
+    if (userRepository.existsByEmail(registerUserRequest.email())) {
+      throw new ResponseStatusException(
+          HttpStatusCode.valueOf(409),
+          String.format("email %s already in use", registerUserRequest.email()));
+    }
 
     User user = userMapper.toUser(registerUserRequest);
 
-    // TODO: email deve ser único.
-    // TODO: add user's authority.
-    // TODO: add creationDate.
-    // TODO: encryptar o password.
+    user.addAuthority(ROLE_USER);
+    user.setCreationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-    // TODO: Persistir o document.
+    userRepository.insert(user);
 
     return userMapper.toUserResponse(user);
   }
