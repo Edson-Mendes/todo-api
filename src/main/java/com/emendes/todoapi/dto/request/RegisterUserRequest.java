@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 /**
  * Record DTO para receber dados de criação de User no corpo da requisição.
  */
+@Builder
 public record RegisterUserRequest(
     @NotBlank(message = "name must not be blank")
     @Size(min = 2, max = 100, message = "name must contain between {min} and {max} characters long")
