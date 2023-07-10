@@ -16,4 +16,12 @@ public interface UserService {
    */
   UserResponse register(RegisterUserRequest registerUserRequest);
 
+  /**
+   * Busca um usuário por id.
+   *
+   * @param id do User a ser buscado
+   * @return UserResponse contendo as informações do usuário encontrado.
+   */
+  UserResponse findById(String id);
+
 }

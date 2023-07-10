@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -38,6 +35,16 @@ public class UserController {
     URI uri = uriBuilder.path("/api/users/{id}").build(userResponse.id());
 
     return ResponseEntity.created(uri).body(userResponse);
+  }
+
+  /**
+   * Trata requisição GET /api/users/{id}.
+   *
+   * @param id identificador do usuário a ser buscado.
+   */
+  @GetMapping("/{id}")
+  public ResponseEntity<UserResponse> findById(@PathVariable(name = "id") String id) {
+    return ResponseEntity.ok(userService.findById(id));
   }
 
 }
