@@ -14,6 +14,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Class que representa o Document user no banco de dados.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
