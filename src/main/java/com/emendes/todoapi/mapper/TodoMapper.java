@@ -25,6 +25,6 @@ public interface TodoMapper {
    * @param todo que será mapeado para TodoResponse.
    * @return {@link TodoResponse} contendo informações que estavam em Todo.
    */
-  TodoResponse toUserResponse(Todo todo);
+  TodoResponse toTodoResponse(Todo todo);
 
 }
