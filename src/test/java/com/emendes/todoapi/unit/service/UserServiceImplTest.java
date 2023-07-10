@@ -6,6 +6,7 @@ import com.emendes.todoapi.mapper.UserMapper;
 import com.emendes.todoapi.model.User;
 import com.emendes.todoapi.repository.UserRepository;
 import com.emendes.todoapi.service.impl.UserServiceImpl;
+import com.emendes.todoapi.util.AuthenticationFacade;
 import com.emendes.todoapi.util.faker.UserFaker;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,8 @@ import org.mockito.Mock;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -36,6 +39,8 @@ class UserServiceImplTest {
   private PasswordEncoder passwordEncoderMock;
   @Mock
   private UserRepository userRepositoryMock;
+  @Mock
+  private AuthenticationFacade authenticationFacadeMock;
 
   @Nested
   @DisplayName("Tests for register method")
@@ -97,6 +102,64 @@ class UserServiceImplTest {
           .withMessageContaining("email lorem@email.com already in use");
 
       BDDMockito.verify(userRepositoryMock).existsByEmail(any());
+    }
+
+  }
+
+  @Nested
+  @DisplayName("Tests for findById method")
+  class FindByIdMethod {
+
+    @Test
+    @DisplayName("findById must return UserResponse when found user successfully")
+    void findById_MustReturnUserResponse_WhenFoundUserSuccessfully() {
+      User userFaker = UserFaker.user();
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(userFaker);
+      BDDMockito.when(userRepositoryMock.findById(any()))
+          .thenReturn(Optional.of(userFaker));
+      BDDMockito.when(userMapperMock.toUserResponse(any()))
+          .thenReturn(UserFaker.userResponse());
+
+      UserResponse actualUserResponse = userService.findById("abcdef");
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(userRepositoryMock).findById(any());
+      BDDMockito.verify(userMapperMock).toUserResponse(any());
+
+      Assertions.assertThat(actualUserResponse).isNotNull();
+      Assertions.assertThat(actualUserResponse.id()).isNotNull().isEqualTo("abcdef");
+      Assertions.assertThat(actualUserResponse.name()).isNotNull().isEqualTo("Lorem Ipsum");
+      Assertions.assertThat(actualUserResponse.email()).isNotNull().isEqualTo("lorem@email.com");
+    }
+
+    @Test
+    @DisplayName("findById must throw ResponseStatusException when provided id is not equals to current user id")
+    void findById_MustThrowResponseStatusException_WhenProvidedIdIsNotEqualsToCurrentUserId() {
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+
+      Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+              .isThrownBy(() -> userService.findById("fedcba"))
+          .withMessageContaining("user not found");
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+    }
+
+    @Test
+    @DisplayName("findById must throw ResponseStatusException when user not found")
+    void findById_MustThrowResponseStatusException_WhenUserNotFound() {
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+      BDDMockito.when(userRepositoryMock.findById(any()))
+          .thenReturn(Optional.empty());
+
+      Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+          .isThrownBy(() -> userService.findById("abcdef"))
+          .withMessageContaining("user not found");
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(userRepositoryMock).findById(any());
     }
 
   }
