@@ -37,11 +37,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponse register(RegisterUserRequest registerUserRequest) {
     if (!registerUserRequest.passwordsMatch()) {
+      log.info("password and confirm_password do not match");
       throw new ResponseStatusException(
           HttpStatusCode.valueOf(400),
           "password and confirm_password do not match");
     }
     if (userRepository.existsByEmail(registerUserRequest.email())) {
+      log.info("email {} already in use", registerUserRequest.email());
       throw new ResponseStatusException(
           HttpStatusCode.valueOf(409),
           String.format("email %s already in use", registerUserRequest.email()));
@@ -55,6 +57,7 @@ public class UserServiceImpl implements UserService {
 
     userRepository.insert(user);
 
+    log.info("user {} registered successfully", user.getEmail());
     return userMapper.toUserResponse(user);
   }
 
