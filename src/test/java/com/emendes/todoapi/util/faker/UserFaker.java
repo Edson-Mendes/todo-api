@@ -52,6 +52,9 @@ public class UserFaker {
         .build();
   }
 
+  /**
+   * Retorna userResponse com todos os campos. Para ser usado em testes.
+   */
   public static UserResponse userResponse() {
     return UserResponse.builder()
         .id("abcdef")
