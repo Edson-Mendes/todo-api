@@ -53,8 +53,6 @@ public class TodoServiceImpl implements TodoService {
     User currentUser = authenticationFacade.getCurrentUser();
     Page<Todo> todoPage = todoRepository.findByUserId(currentUser.getId(), pageable);
 
-    todoPage.forEach(todo -> log.info("user.id: {}, user.name: {}", todo.getUser().getId(), todo.getUser().getName()));
-
     return todoPage.map(todoMapper::toTodoResponse);
   }
 

@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +24,7 @@ public class Todo {
   private String description;
   private boolean concluded;
   private LocalDateTime creationDate;
-  @DBRef(lazy = true)
+  @DocumentReference(lazy = true)
   private User user;
 
 }
