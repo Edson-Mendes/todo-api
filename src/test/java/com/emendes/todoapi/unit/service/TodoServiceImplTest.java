@@ -7,6 +7,7 @@ import com.emendes.todoapi.model.Todo;
 import com.emendes.todoapi.repository.TodoRepository;
 import com.emendes.todoapi.service.impl.TodoServiceImpl;
 import com.emendes.todoapi.util.AuthenticationFacade;
+import com.emendes.todoapi.util.ContantUtil;
 import com.emendes.todoapi.util.faker.TodoFaker;
 import com.emendes.todoapi.util.faker.UserFaker;
 import org.assertj.core.api.Assertions;
@@ -17,9 +18,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * Unit tests para o record dto {@link TodoServiceImpl}
@@ -59,12 +66,43 @@ class TodoServiceImplTest {
 
       TodoResponse actualTodoResponse = todoService.save(createTodoRequest);
 
+      BDDMockito.verify(todoMapperMock).toTodo(any());
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(todoRepositoryMock).insert(any(Todo.class));
+      BDDMockito.verify(todoMapperMock).toTodoResponse(any());
+
       Assertions.assertThat(actualTodoResponse).isNotNull();
       Assertions.assertThat(actualTodoResponse.id()).isNotNull().isEqualTo("fedcba");
       Assertions.assertThat(actualTodoResponse.description()).isNotNull().isEqualTo("Fazer tarefa X");
       Assertions.assertThat(actualTodoResponse.concluded()).isFalse();
       Assertions.assertThat(actualTodoResponse.creationDate()).isNotNull();
       Assertions.assertThat(actualTodoResponse.userId()).isNotNull().isEqualTo("abcdef");
+    }
+
+  }
+
+  @Nested
+  @DisplayName("Tests for fetchPageable method")
+  class FetchPageableMethod {
+
+    @Test
+    @DisplayName("fetchPageable must return Page<TodoResponse> when fetch successfully")
+    void fetchPageable_MustReturnPageTodoResponse_WhenFetchSuccessfully() {
+      Todo todo = TodoFaker.todo();
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+      BDDMockito.when(todoRepositoryMock.findByUserId(any(), eq(ContantUtil.PAGEABLE)))
+          .thenReturn(new PageImpl<>(List.of(todo, todo), ContantUtil.PAGEABLE, 2));
+      BDDMockito.when(todoMapperMock.toTodoResponse(any()))
+          .thenReturn(TodoFaker.todoResponse());
+
+      Page<TodoResponse> actualTodoResponsePage = todoService.fetchPageable(ContantUtil.PAGEABLE);
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(todoRepositoryMock).findByUserId(any(), eq(ContantUtil.PAGEABLE));
+      BDDMockito.verify(todoMapperMock, Mockito.times(2)).toTodoResponse(any());
+
+      Assertions.assertThat(actualTodoResponsePage).isNotNull().hasSize(2);
     }
 
   }
