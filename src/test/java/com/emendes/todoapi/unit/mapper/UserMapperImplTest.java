@@ -38,7 +38,7 @@ class UserMapperImplTest {
     Assertions.assertThat(actualUser.getPassword()).isNotNull().isEqualTo("1234567890");
     Assertions.assertThat(actualUser.getId()).isNull();
     Assertions.assertThat(actualUser.getCreationDate()).isNull();
-    Assertions.assertThat(actualUser.getAuthorities()).isNull();
+    Assertions.assertThat(actualUser.getAuthorities()).isNotNull().isEmpty();
   }
 
   @Test

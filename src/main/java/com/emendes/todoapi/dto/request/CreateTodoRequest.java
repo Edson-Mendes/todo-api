@@ -9,7 +9,7 @@ import lombok.Builder;
  */
 @Builder
 public record CreateTodoRequest(
-    @NotBlank
+    @NotBlank(message = "description must not be blank")
     @Size(min = 2, max = 255, message = "description must contain between {min} and {max} characters long")
     String description
 ) {

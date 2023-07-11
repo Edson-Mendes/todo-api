@@ -58,15 +58,15 @@ public class User implements UserDetails {
     if (role == null || !role.startsWith("ROLE_")) {
       throw new IllegalArgumentException("Invalid role: " + role);
     }
-    if (authorities == null) {
-      authorities = new HashSet<>();
-    }
+    initAuthorities();
 
     authorities.add(role);
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
+    initAuthorities();
+
     return this.authorities.stream().map(SimpleGrantedAuthority::new)
         .collect(Collectors.toSet());
   }
@@ -94,5 +94,14 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  /**
+   * Inicializa authorities caso seja null.
+   */
+  private void initAuthorities() {
+    if (this.authorities == null) {
+      this.authorities = new HashSet<>();
+    }
   }
 }
