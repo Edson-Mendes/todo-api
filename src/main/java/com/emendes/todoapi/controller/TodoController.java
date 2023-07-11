@@ -5,11 +5,11 @@ import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.service.TodoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -37,6 +37,16 @@ public class TodoController {
     URI uri = uriBuilder.path("/api/todos/{id}").build(todoResponse.id());
 
     return ResponseEntity.created(uri).body(todoResponse);
+  }
+
+  /**
+   * Trata requisição GET /api/todos.
+   *
+   * @param pageable objeto que contém os parâmetros da paginação.
+   */
+  @GetMapping
+  public ResponseEntity<Page<TodoResponse>> fetchPageable(@PageableDefault Pageable pageable) {
+    return ResponseEntity.ok(todoService.fetchPageable(pageable));
   }
 
 }

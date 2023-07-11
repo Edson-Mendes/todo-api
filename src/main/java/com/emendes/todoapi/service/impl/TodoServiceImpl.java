@@ -10,6 +10,8 @@ import com.emendes.todoapi.service.TodoService;
 import com.emendes.todoapi.util.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,6 +44,18 @@ public class TodoServiceImpl implements TodoService {
 
     log.info("todo with id: {} saved successfully", todo.getId());
     return todoMapper.toTodoResponse(todo);
+  }
+
+  @Override
+  public Page<TodoResponse> fetchPageable(Pageable pageable) {
+    log.info("attempt to fetch page: {} with size: {}", pageable.getPageNumber(), pageable.getPageSize());
+
+    User currentUser = authenticationFacade.getCurrentUser();
+    Page<Todo> todoPage = todoRepository.findByUserId(currentUser.getId(), pageable);
+
+    todoPage.forEach(todo -> log.info("user.id: {}, user.name: {}", todo.getUser().getId(), todo.getUser().getName()));
+
+    return todoPage.map(todoMapper::toTodoResponse);
   }
 
 }
