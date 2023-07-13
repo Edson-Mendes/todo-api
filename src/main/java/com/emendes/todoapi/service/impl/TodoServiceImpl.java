@@ -12,10 +12,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 /**
  * Implementação de {@link TodoService}.
@@ -54,6 +57,21 @@ public class TodoServiceImpl implements TodoService {
     Page<Todo> todoPage = todoRepository.findByUserId(currentUser.getId(), pageable);
 
     return todoPage.map(todoMapper::toTodoResponse);
+  }
+
+  /**
+   * @throws ResponseStatusException caso Todo não seja encontrado.
+   */
+  @Override
+  public TodoResponse findById(String todoId) {
+    log.info("attempt to find todo with id: {}", todoId);
+    User currentUser = authenticationFacade.getCurrentUser();
+
+    Todo todo = todoRepository.findByIdAndUserId(todoId, currentUser.getId())
+        .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Todo not found"));
+
+    log.info("Todo with id: {} found successfully", todoId);
+    return todoMapper.toTodoResponse(todo);
   }
 
 }

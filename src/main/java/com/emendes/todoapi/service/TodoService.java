@@ -26,4 +26,12 @@ public interface TodoService {
    */
   Page<TodoResponse> fetchPageable(Pageable pageable);
 
+  /**
+   * Busca Todo por todoId.
+   *
+   * @param todoId identificador do Todo.
+   * @return TodoResponse contendo as informações do Todo encontrado.
+   */
+  TodoResponse findById(String todoId);
+
 }

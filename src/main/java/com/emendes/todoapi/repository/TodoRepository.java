@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Optional;
+
 /**
  * Repository interface to access Todos.
  */
@@ -18,5 +20,14 @@ public interface TodoRepository extends MongoRepository<Todo, String> {
    * @return Page of Todos
    */
   Page<Todo> findByUserId(String userId, Pageable pageable);
+
+  /**
+   * Busca todo por todoId e userId
+   *
+   * @param todoId identificador do Todo.
+   * @param userId identificador do User.
+   * @return Optional of Todo.
+   */
+  Optional<Todo> findByIdAndUserId(String todoId, String userId);
 
 }

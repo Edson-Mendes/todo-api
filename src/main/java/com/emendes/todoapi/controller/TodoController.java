@@ -49,4 +49,9 @@ public class TodoController {
     return ResponseEntity.ok(todoService.fetchPageable(pageable));
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<TodoResponse> findById(@PathVariable(name = "id") String todoId) {
+    return ResponseEntity.ok(todoService.findById(todoId));
+  }
+
 }
