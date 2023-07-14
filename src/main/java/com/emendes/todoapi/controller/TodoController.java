@@ -62,7 +62,7 @@ public class TodoController {
   /**
    * Trata requisição PUT /api/todos/{id}
    *
-   * @param todoId            identificador da Todo.
+   * @param todoId      identificador da Todo.
    * @param todoRequest contendo as novas informações da Todo.
    */
   @PutMapping("/{id}")

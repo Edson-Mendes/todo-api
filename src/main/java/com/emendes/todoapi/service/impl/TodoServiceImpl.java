@@ -58,37 +58,41 @@ public class TodoServiceImpl implements TodoService {
     return todoPage.map(todoMapper::toTodoResponse);
   }
 
-  /**
-   * @throws ResponseStatusException caso Todo não seja encontrado.
-   */
   @Override
   public TodoResponse findById(String todoId) {
     log.info("attempt to find todo with id: {}", todoId);
-    User currentUser = authenticationFacade.getCurrentUser();
-
-    Todo todo = todoRepository.findByIdAndUserId(todoId, currentUser.getId())
-        .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Todo not found"));
+    Todo todo = findTodoById(todoId);
 
     log.info("Todo with id: {} found successfully", todoId);
     return todoMapper.toTodoResponse(todo);
   }
 
-  /**
-   * @throws ResponseStatusException caso Todo não seja encontrado.
-   */
   @Override
   public void update(String todoId, TodoRequest todoRequest) {
-    log.info("attempt to find todo with id: {}", todoId);
-    User currentUser = authenticationFacade.getCurrentUser();
+    log.info("attempt to update todo with id: {}", todoId);
+    Todo todo = findTodoById(todoId);
 
-    long amountUpdatedDocs = todoRepository.updateByIdAndUserId(
-        todoId, currentUser.getId(), todoRequest.description());
+    todo.setDescription(todoRequest.description());
+    todoRepository.save(todo);
 
-    if (amountUpdatedDocs == 0) {
-      log.info("todo not found with id: {} for user: {}", todoId, currentUser.getId());
-      throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Todo not found");
-    }
     log.info("todo with id: {} updated successful", todoId);
+  }
+
+  /**
+   * Busca Todo por todoId e userId.
+   *
+   * @param todoId identificador do Todo.
+   * @return todo encontrando para o dado todoId.
+   * @throws ResponseStatusException caso Todo não seja encontrado.
+   */
+  private Todo findTodoById(String todoId) {
+    String userId = authenticationFacade.getCurrentUser().getId();
+
+    return todoRepository.findByIdAndUserId(todoId, userId)
+        .orElseThrow(() -> {
+          log.info("todo not found with id: {}", todoId);
+          return new ResponseStatusException(HttpStatusCode.valueOf(404), "Todo not found");
+        });
   }
 
 }

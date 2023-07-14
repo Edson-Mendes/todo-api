@@ -4,8 +4,6 @@ import com.emendes.todoapi.model.Todo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.mongodb.repository.Update;
 
 import java.util.Optional;
 
@@ -32,15 +30,4 @@ public interface TodoRepository extends MongoRepository<Todo, String> {
    */
   Optional<Todo> findByIdAndUserId(String todoId, String userId);
 
-  /**
-   * Atualiza a descrição de uma Todo que corresponda ao todoId e userId fornecidos.
-   *
-   * @param todoId      identificador da Todo
-   * @param userId      identificador do User que possui a Todo.
-   * @param description nova descrição da Todo.
-   * @return Quantidade de documents atualizados.
-   */
-  @Query(value = "{ '_id' : { '$oid' : ?0}, 'user' : { '$oid' : ?1}}")
-  @Update("{ '$set' : { 'description' : ?2 } }")
-  long updateByIdAndUserId(String todoId, String userId, String description);
 }
