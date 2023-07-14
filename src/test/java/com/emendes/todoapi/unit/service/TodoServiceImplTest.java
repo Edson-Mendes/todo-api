@@ -22,8 +22,10 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -103,6 +105,52 @@ class TodoServiceImplTest {
       BDDMockito.verify(todoMapperMock, Mockito.times(2)).toTodoResponse(any());
 
       Assertions.assertThat(actualTodoResponsePage).isNotNull().hasSize(2);
+    }
+
+  }
+
+  @Nested
+  @DisplayName("Tests for findById method")
+  class FindByIdMethod {
+
+    @Test
+    @DisplayName("findById must return TodoResponse when found successfully")
+    void findById_MustReturnTodoResponse_WhenFoundSuccessfully() {
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+      BDDMockito.when(todoRepositoryMock.findByIdAndUserId(any(), any()))
+          .thenReturn(Optional.of(TodoFaker.todo()));
+      BDDMockito.when(todoMapperMock.toTodoResponse(any()))
+          .thenReturn(TodoFaker.todoResponse());
+
+      TodoResponse actualTodoResponse = todoService.findById("fdecba");
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(todoRepositoryMock).findByIdAndUserId(any(), any());
+      BDDMockito.verify(todoMapperMock).toTodoResponse(any());
+
+      Assertions.assertThat(actualTodoResponse).isNotNull();
+      Assertions.assertThat(actualTodoResponse.id()).isNotNull().isEqualTo("fedcba");
+      Assertions.assertThat(actualTodoResponse.description()).isNotNull().isEqualTo("Fazer tarefa X");
+      Assertions.assertThat(actualTodoResponse.concluded()).isFalse();
+      Assertions.assertThat(actualTodoResponse.creationDate()).isNotNull();
+      Assertions.assertThat(actualTodoResponse.userId()).isNotNull().isEqualTo("abcdef");
+    }
+
+    @Test
+    @DisplayName("findById must throw ResponseStatusException when not found todo with id 'fedcba'")
+    void findById_MustThrowResponseStatusException_WhenNotFoundTodoWithIdFEDCBA() {
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+      BDDMockito.when(todoRepositoryMock.findByIdAndUserId(any(), any()))
+          .thenReturn(Optional.empty());
+
+      Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+          .isThrownBy(() -> todoService.findById("fedcba"))
+          .withMessageContaining("Todo not found");
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(todoRepositoryMock).findByIdAndUserId(any(), any());
     }
 
   }
