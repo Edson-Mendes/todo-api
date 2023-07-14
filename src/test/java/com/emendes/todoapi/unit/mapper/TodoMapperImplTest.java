@@ -1,6 +1,6 @@
 package com.emendes.todoapi.unit.mapper;
 
-import com.emendes.todoapi.dto.request.CreateTodoRequest;
+import com.emendes.todoapi.dto.request.TodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.mapper.impl.TodoMapperImpl;
 import com.emendes.todoapi.model.Todo;
@@ -23,7 +23,7 @@ class TodoMapperImplTest {
   @Test
   @DisplayName("toTodo must return Todo when map successfully")
   void toTodo_MustReturnTodo_WhenMapSuccessfully() {
-    CreateTodoRequest todoRequest = CreateTodoRequest.builder()
+    TodoRequest todoRequest = TodoRequest.builder()
         .description("Fazer tarefa x")
         .build();
 

@@ -1,6 +1,6 @@
 package com.emendes.todoapi.controller;
 
-import com.emendes.todoapi.dto.request.CreateTodoRequest;
+import com.emendes.todoapi.dto.request.TodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.service.TodoService;
 import jakarta.validation.Valid;
@@ -27,12 +27,12 @@ public class TodoController {
   /**
    * Trata requisição POST /api/todos.
    *
-   * @param createTodoRequest DTO que contém as informações do Todo a ser salvo.
+   * @param todoRequest DTO que contém as informações do Todo a ser salvo.
    */
   @PostMapping
   public ResponseEntity<TodoResponse> save(
-      @RequestBody @Valid CreateTodoRequest createTodoRequest, UriComponentsBuilder uriBuilder) {
-    TodoResponse todoResponse = todoService.save(createTodoRequest);
+      @RequestBody @Valid TodoRequest todoRequest, UriComponentsBuilder uriBuilder) {
+    TodoResponse todoResponse = todoService.save(todoRequest);
 
     URI uri = uriBuilder.path("/api/todos/{id}").build(todoResponse.id());
 
@@ -49,9 +49,27 @@ public class TodoController {
     return ResponseEntity.ok(todoService.fetchPageable(pageable));
   }
 
+  /**
+   * Trata requisição GET /api/todos/{id}.
+   *
+   * @param todoId identificador da Todo a ser buscado.
+   */
   @GetMapping("/{id}")
   public ResponseEntity<TodoResponse> findById(@PathVariable(name = "id") String todoId) {
     return ResponseEntity.ok(todoService.findById(todoId));
+  }
+
+  /**
+   * Trata requisição PUT /api/todos/{id}
+   *
+   * @param todoId            identificador da Todo.
+   * @param todoRequest contendo as novas informações da Todo.
+   */
+  @PutMapping("/{id}")
+  public ResponseEntity<Void> update(
+      @PathVariable(name = "id") String todoId, @RequestBody @Valid TodoRequest todoRequest) {
+    todoService.update(todoId, todoRequest);
+    return ResponseEntity.noContent().build();
   }
 
 }

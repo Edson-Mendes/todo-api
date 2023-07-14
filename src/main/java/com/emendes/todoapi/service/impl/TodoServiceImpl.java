@@ -1,6 +1,6 @@
 package com.emendes.todoapi.service.impl;
 
-import com.emendes.todoapi.dto.request.CreateTodoRequest;
+import com.emendes.todoapi.dto.request.TodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.mapper.TodoMapper;
 import com.emendes.todoapi.model.Todo;
@@ -18,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 /**
  * Implementação de {@link TodoService}.
@@ -33,10 +32,10 @@ public class TodoServiceImpl implements TodoService {
   private final TodoRepository todoRepository;
 
   @Override
-  public TodoResponse save(CreateTodoRequest createTodoRequest) {
+  public TodoResponse save(TodoRequest todoRequest) {
     log.info("attempt to save todo");
 
-    Todo todo = todoMapper.toTodo(createTodoRequest);
+    Todo todo = todoMapper.toTodo(todoRequest);
     User currentUser = authenticationFacade.getCurrentUser();
 
     todo.setConcluded(false);
@@ -72,6 +71,24 @@ public class TodoServiceImpl implements TodoService {
 
     log.info("Todo with id: {} found successfully", todoId);
     return todoMapper.toTodoResponse(todo);
+  }
+
+  /**
+   * @throws ResponseStatusException caso Todo não seja encontrado.
+   */
+  @Override
+  public void update(String todoId, TodoRequest todoRequest) {
+    log.info("attempt to find todo with id: {}", todoId);
+    User currentUser = authenticationFacade.getCurrentUser();
+
+    long amountUpdatedDocs = todoRepository.updateByIdAndUserId(
+        todoId, currentUser.getId(), todoRequest.description());
+
+    if (amountUpdatedDocs == 0) {
+      log.info("todo not found with id: {} for user: {}", todoId, currentUser.getId());
+      throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Todo not found");
+    }
+    log.info("todo with id: {} updated successful", todoId);
   }
 
 }

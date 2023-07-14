@@ -1,6 +1,6 @@
 package com.emendes.todoapi.service;
 
-import com.emendes.todoapi.dto.request.CreateTodoRequest;
+import com.emendes.todoapi.dto.request.TodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +13,10 @@ public interface TodoService {
   /**
    * Salva um Todo no sistema.
    *
-   * @param createTodoRequest contendo as informações do novo Todo.
+   * @param todoRequest contendo as informações do novo Todo.
    * @return {@link TodoResponse} contendo informações sobre o Todo registrado.
    */
-  TodoResponse save(CreateTodoRequest createTodoRequest);
+  TodoResponse save(TodoRequest todoRequest);
 
   /**
    * Busca paginada de Todos.
@@ -33,5 +33,13 @@ public interface TodoService {
    * @return TodoResponse contendo as informações do Todo encontrado.
    */
   TodoResponse findById(String todoId);
+
+  /**
+   * Atualiza uma Todo dado um identificador da Todo e o DTO contendo as novas informações.
+   *
+   * @param todoId            identificador da Todo.
+   * @param todoRequest que contém as novas informações da Todo.
+   */
+  void update(String todoId, TodoRequest todoRequest);
 
 }

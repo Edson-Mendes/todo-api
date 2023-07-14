@@ -1,6 +1,6 @@
 package com.emendes.todoapi.unit.dto.request;
 
-import com.emendes.todoapi.dto.request.CreateTodoRequest;
+import com.emendes.todoapi.dto.request.TodoRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Unit tests para o record dto {@link CreateTodoRequest}
+ * Unit tests para o record dto {@link TodoRequest}
  */
 @DisplayName("Unit tests for CreateTodoRequest")
-class CreateTodoRequestTest {
+class TodoRequestTest {
 
   private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -42,11 +42,11 @@ class CreateTodoRequestTest {
     void descriptionValidation_MustNotReturnViolations_WhenDescriptionIsValid(String validDescription) {
       Assertions.assertThat(validDescription).hasSizeGreaterThan(1).hasSizeLessThan(256);
 
-      CreateTodoRequest request = CreateTodoRequest.builder()
+      TodoRequest request = TodoRequest.builder()
           .description(validDescription)
           .build();
 
-      Set<ConstraintViolation<CreateTodoRequest>> actualViolations =
+      Set<ConstraintViolation<TodoRequest>> actualViolations =
           validator.validateProperty(request, DESCRIPTION_PROPERTY);
 
       Assertions.assertThat(actualViolations).isEmpty();
@@ -57,11 +57,11 @@ class CreateTodoRequestTest {
     @ValueSource(strings = {"   ", "\t", "\n"})
     @DisplayName("descriptionValidation must return violations when description is blank")
     void descriptionValidation_MustReturnViolations_WhenDescriptionIsBlank(String blankDescription) {
-      CreateTodoRequest request = CreateTodoRequest.builder()
+      TodoRequest request = TodoRequest.builder()
           .description(blankDescription)
           .build();
 
-      Set<ConstraintViolation<CreateTodoRequest>> actualViolations =
+      Set<ConstraintViolation<TodoRequest>> actualViolations =
           validator.validateProperty(request, DESCRIPTION_PROPERTY);
 
       List<String> actualMessages = actualViolations.stream().map(ConstraintViolation::getMessage).toList();
@@ -78,11 +78,11 @@ class CreateTodoRequestTest {
             "DescriptionWith255CharactersDescriptionWith255CharactersDescriptionWith255CharactersDesc"})
     @DisplayName("descriptionValidation must return violations when description length is less than 2 or bigger than 255")
     void descriptionValidation_MustReturnViolations_WhenDescriptionLengthIsLessThan2OrBiggerThan100(String invalidDescription) {
-      CreateTodoRequest request = CreateTodoRequest.builder()
+      TodoRequest request = TodoRequest.builder()
           .description(invalidDescription)
           .build();
 
-      Set<ConstraintViolation<CreateTodoRequest>> actualViolations =
+      Set<ConstraintViolation<TodoRequest>> actualViolations =
           validator.validateProperty(request, DESCRIPTION_PROPERTY);
 
       List<String> actualMessages = actualViolations.stream().map(ConstraintViolation::getMessage).toList();

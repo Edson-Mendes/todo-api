@@ -1,6 +1,6 @@
 package com.emendes.todoapi.unit.service;
 
-import com.emendes.todoapi.dto.request.CreateTodoRequest;
+import com.emendes.todoapi.dto.request.TodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.mapper.TodoMapper;
 import com.emendes.todoapi.model.Todo;
@@ -62,11 +62,11 @@ class TodoServiceImplTest {
       BDDMockito.when(todoMapperMock.toTodoResponse(any()))
           .thenReturn(TodoFaker.todoResponse());
 
-      CreateTodoRequest createTodoRequest = CreateTodoRequest.builder()
+      TodoRequest todoRequest = TodoRequest.builder()
           .description("Fazer tarefa X")
           .build();
 
-      TodoResponse actualTodoResponse = todoService.save(createTodoRequest);
+      TodoResponse actualTodoResponse = todoService.save(todoRequest);
 
       BDDMockito.verify(todoMapperMock).toTodo(any());
       BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
