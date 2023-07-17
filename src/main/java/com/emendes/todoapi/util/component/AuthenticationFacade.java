@@ -1,4 +1,4 @@
-package com.emendes.todoapi.util;
+package com.emendes.todoapi.util.component;
 
 import com.emendes.todoapi.model.User;
 

@@ -6,7 +6,7 @@ import com.emendes.todoapi.mapper.TodoMapper;
 import com.emendes.todoapi.model.Todo;
 import com.emendes.todoapi.repository.TodoRepository;
 import com.emendes.todoapi.service.impl.TodoServiceImpl;
-import com.emendes.todoapi.util.AuthenticationFacade;
+import com.emendes.todoapi.util.component.AuthenticationFacade;
 import com.emendes.todoapi.util.ContantUtil;
 import com.emendes.todoapi.util.faker.TodoFaker;
 import com.emendes.todoapi.util.faker.UserFaker;

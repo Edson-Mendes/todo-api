@@ -6,7 +6,7 @@ import com.emendes.todoapi.mapper.UserMapper;
 import com.emendes.todoapi.model.User;
 import com.emendes.todoapi.repository.UserRepository;
 import com.emendes.todoapi.service.impl.UserServiceImpl;
-import com.emendes.todoapi.util.AuthenticationFacade;
+import com.emendes.todoapi.util.component.AuthenticationFacade;
 import com.emendes.todoapi.util.faker.UserFaker;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

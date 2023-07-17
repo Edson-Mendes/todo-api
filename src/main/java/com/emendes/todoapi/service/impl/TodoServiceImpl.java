@@ -7,7 +7,7 @@ import com.emendes.todoapi.model.Todo;
 import com.emendes.todoapi.model.User;
 import com.emendes.todoapi.repository.TodoRepository;
 import com.emendes.todoapi.service.TodoService;
-import com.emendes.todoapi.util.AuthenticationFacade;
+import com.emendes.todoapi.util.component.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

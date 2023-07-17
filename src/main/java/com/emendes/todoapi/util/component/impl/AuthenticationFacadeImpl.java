@@ -1,7 +1,7 @@
-package com.emendes.todoapi.util.impl;
+package com.emendes.todoapi.util.component.impl;
 
 import com.emendes.todoapi.model.User;
-import com.emendes.todoapi.util.AuthenticationFacade;
+import com.emendes.todoapi.util.component.AuthenticationFacade;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

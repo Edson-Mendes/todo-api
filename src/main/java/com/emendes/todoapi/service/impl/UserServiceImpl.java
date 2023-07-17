@@ -6,7 +6,7 @@ import com.emendes.todoapi.mapper.UserMapper;
 import com.emendes.todoapi.model.User;
 import com.emendes.todoapi.repository.UserRepository;
 import com.emendes.todoapi.service.UserService;
-import com.emendes.todoapi.util.AuthenticationFacade;
+import com.emendes.todoapi.util.component.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
