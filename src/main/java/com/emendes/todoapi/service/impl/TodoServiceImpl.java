@@ -78,6 +78,16 @@ public class TodoServiceImpl implements TodoService {
     log.info("todo with id: {} updated successful", todoId);
   }
 
+  @Override
+  public void delete(String todoId) {
+    log.info("attempt to delete todo with id: {}", todoId);
+
+    Todo todo = findTodoById(todoId);
+    todoRepository.delete(todo);
+
+    log.info("todo with id: {} delete successful", todoId);
+  }
+
   /**
    * Busca Todo por todoId e userId.
    *

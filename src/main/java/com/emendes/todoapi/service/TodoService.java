@@ -35,11 +35,18 @@ public interface TodoService {
   TodoResponse findById(String todoId);
 
   /**
-   * Atualiza uma Todo dado um identificador da Todo e o DTO contendo as novas informações.
+   * Atualiza uma Todo, dado um identificador da Todo e o DTO contendo as novas informações.
    *
-   * @param todoId            identificador da Todo.
+   * @param todoId      identificador da Todo.
    * @param todoRequest que contém as novas informações da Todo.
    */
   void update(String todoId, TodoRequest todoRequest);
+
+  /**
+   * Deleta uma Todo, dado um identificador da Todo (todoId).
+   *
+   * @param todoId identificador da Todo.
+   */
+  void delete(String todoId);
 
 }

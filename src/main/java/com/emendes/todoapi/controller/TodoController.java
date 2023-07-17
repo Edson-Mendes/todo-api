@@ -1,9 +1,9 @@
 package com.emendes.todoapi.controller;
 
-import com.emendes.todoapi.util.annotation.IdValidation;
 import com.emendes.todoapi.dto.request.TodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.service.TodoService;
+import com.emendes.todoapi.util.annotation.IdValidation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -72,6 +72,18 @@ public class TodoController {
   public ResponseEntity<Void> update(
       @PathVariable(name = "id") @IdValidation String todoId, @RequestBody @Valid TodoRequest todoRequest) {
     todoService.update(todoId, todoRequest);
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Trata requisição DELETE /api/todos/{id}
+   *
+   * @param todoId identificador da Todo.
+   */
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(
+      @PathVariable(name = "id") @IdValidation String todoId) {
+    todoService.delete(todoId);
     return ResponseEntity.noContent().build();
   }
 
