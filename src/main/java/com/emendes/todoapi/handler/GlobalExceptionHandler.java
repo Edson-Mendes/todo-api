@@ -1,5 +1,7 @@
 package com.emendes.todoapi.handler;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.*;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.FieldError;
@@ -52,6 +54,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     problemDetail.setTitle(HttpStatus.valueOf(ex.getStatusCode().value()).name());
 
     return ResponseEntity.status(ex.getStatusCode()).body(problemDetail);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<ProblemDetail> handleConstraintViolation(ConstraintViolationException ex) {
+    final int httpStatusCode = 400;
+    String messages = ex.getConstraintViolations().stream()
+        .map(ConstraintViolation::getMessage)
+        .collect(Collectors.joining(","));
+
+    String invalidValues = ex.getConstraintViolations().stream()
+        .map(ConstraintViolation::getInvalidValue)
+        .map(Object::toString)
+        .collect(Collectors.joining(","));
+
+    ProblemDetail problemDetail = ProblemDetail
+        .forStatusAndDetail(HttpStatusCode.valueOf(httpStatusCode), messages);
+
+    problemDetail.setType(URI.create(String.format(URI_TEMPLATE, "/something-went-wrong")));
+    problemDetail.setTitle(HttpStatus.valueOf(httpStatusCode).name());
+    problemDetail.setProperty("invalid_values", invalidValues);
+
+    return ResponseEntity.status(httpStatusCode).body(problemDetail);
   }
 
 }
