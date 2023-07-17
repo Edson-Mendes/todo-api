@@ -6,8 +6,8 @@ import com.emendes.todoapi.mapper.TodoMapper;
 import com.emendes.todoapi.model.Todo;
 import com.emendes.todoapi.repository.TodoRepository;
 import com.emendes.todoapi.service.impl.TodoServiceImpl;
-import com.emendes.todoapi.util.component.AuthenticationFacade;
 import com.emendes.todoapi.util.ContantUtil;
+import com.emendes.todoapi.util.component.AuthenticationFacade;
 import com.emendes.todoapi.util.faker.TodoFaker;
 import com.emendes.todoapi.util.faker.UserFaker;
 import org.assertj.core.api.Assertions;
@@ -147,6 +147,53 @@ class TodoServiceImplTest {
 
       Assertions.assertThatExceptionOfType(ResponseStatusException.class)
           .isThrownBy(() -> todoService.findById("fedcba"))
+          .withMessageContaining("Todo not found");
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(todoRepositoryMock).findByIdAndUserId(any(), any());
+    }
+
+  }
+
+  @Nested
+  @DisplayName("Tests for update method")
+  class UpdateMethod {
+
+    @Test
+    @DisplayName("update must call TodoRepository#save when update successfully")
+    void update_MustCallTodoRepositorySave_WhenUpdateSuccessfully() {
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+      BDDMockito.when(todoRepositoryMock.findByIdAndUserId(eq("fedcba"), any()))
+          .thenReturn(Optional.of(TodoFaker.todo()));
+      BDDMockito.when(todoRepositoryMock.save(any()))
+          .thenReturn(TodoFaker.updatedTodo());
+
+      TodoRequest todoRequest = TodoRequest.builder()
+          .description("Fazer tarefa X (atualizado)")
+          .build();
+
+      todoService.update("fedcba", todoRequest);
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(todoRepositoryMock).findByIdAndUserId(eq("fedcba"), any());
+      BDDMockito.verify(todoRepositoryMock).save(any());
+    }
+
+    @Test
+    @DisplayName("udpate must throw ResponseStatusException when not found todo with id 'fedcba'")
+    void findById_MustThrowResponseStatusException_WhenNotFoundTodoWithIdFEDCBA() {
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+      BDDMockito.when(todoRepositoryMock.findByIdAndUserId(any(), any()))
+          .thenReturn(Optional.empty());
+
+      TodoRequest todoRequest = TodoRequest.builder()
+          .description("Fazer tarefa X (atualizado)")
+          .build();
+
+      Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+          .isThrownBy(() -> todoService.update("fedcba", todoRequest))
           .withMessageContaining("Todo not found");
 
       BDDMockito.verify(authenticationFacadeMock).getCurrentUser();

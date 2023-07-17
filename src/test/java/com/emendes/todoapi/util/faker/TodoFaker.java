@@ -48,4 +48,17 @@ public class TodoFaker {
         .userId("abcdef")
         .build();
   }
+
+  /**
+   * Retorna um document Todo com todos os campos, e o campo description atualizado.
+   */
+  public static Todo updatedTodo() {
+    return Todo.builder()
+        .id("fedcba")
+        .description("Fazer tarefa X (atualizado)")
+        .concluded(false)
+        .creationDate(LocalDateTime.parse("2023-07-13T08:40:00").truncatedTo(ChronoUnit.SECONDS))
+        .user(UserFaker.user())
+        .build();
+  }
 }
