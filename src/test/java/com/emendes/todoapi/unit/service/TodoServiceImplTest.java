@@ -181,8 +181,8 @@ class TodoServiceImplTest {
     }
 
     @Test
-    @DisplayName("udpate must throw ResponseStatusException when not found todo with id 'fedcba'")
-    void findById_MustThrowResponseStatusException_WhenNotFoundTodoWithIdFEDCBA() {
+    @DisplayName("update must throw ResponseStatusException when not found todo with id 'fedcba'")
+    void update_MustThrowResponseStatusException_WhenNotFoundTodoWithIdFEDCBA() {
       BDDMockito.when(authenticationFacadeMock.getCurrentUser())
           .thenReturn(UserFaker.user());
       BDDMockito.when(todoRepositoryMock.findByIdAndUserId(any(), any()))
@@ -194,6 +194,44 @@ class TodoServiceImplTest {
 
       Assertions.assertThatExceptionOfType(ResponseStatusException.class)
           .isThrownBy(() -> todoService.update("fedcba", todoRequest))
+          .withMessageContaining("Todo not found");
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(todoRepositoryMock).findByIdAndUserId(any(), any());
+    }
+
+  }
+
+  @Nested
+  @DisplayName("Tests for delete method")
+  class DeleteMethod {
+
+    @Test
+    @DisplayName("delete must call TodoRepository#delete when delete successfully")
+    void delete_MustCallTodoRepositoryDelete_WhenDeleteSuccessfully() {
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+      BDDMockito.when(todoRepositoryMock.findByIdAndUserId(eq("fedcba"), any()))
+          .thenReturn(Optional.of(TodoFaker.todo()));
+      BDDMockito.doNothing().when(todoRepositoryMock).delete(any());
+
+      todoService.delete("fedcba");
+
+      BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
+      BDDMockito.verify(todoRepositoryMock).findByIdAndUserId(eq("fedcba"), any());
+      BDDMockito.verify(todoRepositoryMock).delete(any());
+    }
+
+    @Test
+    @DisplayName("delete must throw ResponseStatusException when not found todo with id 'fedcba'")
+    void delete_MustThrowResponseStatusException_WhenNotFoundTodoWithIdFEDCBA() {
+      BDDMockito.when(authenticationFacadeMock.getCurrentUser())
+          .thenReturn(UserFaker.user());
+      BDDMockito.when(todoRepositoryMock.findByIdAndUserId(any(), any()))
+          .thenReturn(Optional.empty());
+
+      Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+          .isThrownBy(() -> todoService.delete("fedcba"))
           .withMessageContaining("Todo not found");
 
       BDDMockito.verify(authenticationFacadeMock).getCurrentUser();
