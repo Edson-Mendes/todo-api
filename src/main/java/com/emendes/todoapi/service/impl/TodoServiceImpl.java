@@ -1,6 +1,7 @@
 package com.emendes.todoapi.service.impl;
 
 import com.emendes.todoapi.dto.request.TodoRequest;
+import com.emendes.todoapi.dto.request.UpdateTodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.mapper.TodoMapper;
 import com.emendes.todoapi.model.Todo;
@@ -68,11 +69,12 @@ public class TodoServiceImpl implements TodoService {
   }
 
   @Override
-  public void update(String todoId, TodoRequest todoRequest) {
+  public void update(String todoId, UpdateTodoRequest todoRequest) {
     log.info("attempt to update todo with id: {}", todoId);
     Todo todo = findTodoById(todoId);
 
     todo.setDescription(todoRequest.description());
+    todo.setConcluded(todoRequest.concluded());
     todoRepository.save(todo);
 
     log.info("todo with id: {} updated successful", todoId);

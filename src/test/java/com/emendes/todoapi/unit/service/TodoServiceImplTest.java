@@ -1,6 +1,7 @@
 package com.emendes.todoapi.unit.service;
 
 import com.emendes.todoapi.dto.request.TodoRequest;
+import com.emendes.todoapi.dto.request.UpdateTodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.mapper.TodoMapper;
 import com.emendes.todoapi.model.Todo;
@@ -169,8 +170,9 @@ class TodoServiceImplTest {
       BDDMockito.when(todoRepositoryMock.save(any()))
           .thenReturn(TodoFaker.updatedTodo());
 
-      TodoRequest todoRequest = TodoRequest.builder()
+      UpdateTodoRequest todoRequest = UpdateTodoRequest.builder()
           .description("Fazer tarefa X (atualizado)")
+          .concluded(false)
           .build();
 
       todoService.update("fedcba", todoRequest);
@@ -188,8 +190,9 @@ class TodoServiceImplTest {
       BDDMockito.when(todoRepositoryMock.findByIdAndUserId(any(), any()))
           .thenReturn(Optional.empty());
 
-      TodoRequest todoRequest = TodoRequest.builder()
+      UpdateTodoRequest todoRequest = UpdateTodoRequest.builder()
           .description("Fazer tarefa X (atualizado)")
+          .concluded(false)
           .build();
 
       Assertions.assertThatExceptionOfType(ResponseStatusException.class)

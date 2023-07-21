@@ -1,6 +1,7 @@
 package com.emendes.todoapi.controller;
 
 import com.emendes.todoapi.dto.request.TodoRequest;
+import com.emendes.todoapi.dto.request.UpdateTodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.service.TodoService;
 import com.emendes.todoapi.util.annotation.IdValidation;
@@ -70,7 +71,7 @@ public class TodoController {
    */
   @PutMapping("/{id}")
   public ResponseEntity<Void> update(
-      @PathVariable(name = "id") @IdValidation String todoId, @RequestBody @Valid TodoRequest todoRequest) {
+      @PathVariable(name = "id") @IdValidation String todoId, @RequestBody @Valid UpdateTodoRequest todoRequest) {
     todoService.update(todoId, todoRequest);
     return ResponseEntity.noContent().build();
   }

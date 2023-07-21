@@ -1,6 +1,7 @@
 package com.emendes.todoapi.service;
 
 import com.emendes.todoapi.dto.request.TodoRequest;
+import com.emendes.todoapi.dto.request.UpdateTodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +41,7 @@ public interface TodoService {
    * @param todoId      identificador da Todo.
    * @param todoRequest que contém as novas informações da Todo.
    */
-  void update(String todoId, TodoRequest todoRequest);
+  void update(String todoId, UpdateTodoRequest todoRequest);
 
   /**
    * Deleta uma Todo, dado um identificador da Todo (todoId).
