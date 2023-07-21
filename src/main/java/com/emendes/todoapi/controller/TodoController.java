@@ -1,6 +1,6 @@
 package com.emendes.todoapi.controller;
 
-import com.emendes.todoapi.dto.request.TodoRequest;
+import com.emendes.todoapi.dto.request.CreateTodoRequest;
 import com.emendes.todoapi.dto.request.UpdateTodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.service.TodoService;
@@ -31,12 +31,12 @@ public class TodoController {
   /**
    * Trata requisição POST /api/todos.
    *
-   * @param todoRequest DTO que contém as informações do Todo a ser salvo.
+   * @param createTodoRequest DTO que contém as informações do Todo a ser salvo.
    */
   @PostMapping
   public ResponseEntity<TodoResponse> save(
-      @RequestBody @Valid TodoRequest todoRequest, UriComponentsBuilder uriBuilder) {
-    TodoResponse todoResponse = todoService.save(todoRequest);
+      @RequestBody @Valid CreateTodoRequest createTodoRequest, UriComponentsBuilder uriBuilder) {
+    TodoResponse todoResponse = todoService.save(createTodoRequest);
 
     URI uri = uriBuilder.path("/api/todos/{id}").build(todoResponse.id());
 

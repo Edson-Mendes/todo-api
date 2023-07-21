@@ -1,6 +1,6 @@
 package com.emendes.todoapi.mapper;
 
-import com.emendes.todoapi.dto.request.TodoRequest;
+import com.emendes.todoapi.dto.request.CreateTodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.model.Todo;
 
@@ -13,10 +13,10 @@ public interface TodoMapper {
    * Mapeia o DTO CreateTodoRequest para o document Todo.<br>
    * todoRequest não deve ser null.
    *
-   * @param todoRequest que será mapeado para Todo
+   * @param createTodoRequest que será mapeado para Todo
    * @return {@link Todo} contendo as informações que estavam em todoRequest.
    */
-  Todo toTodo(TodoRequest todoRequest);
+  Todo toTodo(CreateTodoRequest createTodoRequest);
 
   /**
    * Mapeia um docment Todo para o DTO TodoResponse.<br>

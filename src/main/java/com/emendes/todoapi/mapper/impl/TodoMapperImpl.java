@@ -1,6 +1,6 @@
 package com.emendes.todoapi.mapper.impl;
 
-import com.emendes.todoapi.dto.request.TodoRequest;
+import com.emendes.todoapi.dto.request.CreateTodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.mapper.TodoMapper;
 import com.emendes.todoapi.model.Todo;
@@ -14,11 +14,11 @@ import org.springframework.util.Assert;
 public class TodoMapperImpl implements TodoMapper {
 
   @Override
-  public Todo toTodo(TodoRequest todoRequest) {
-    Assert.notNull(todoRequest, "CreateTodoRequest must not be null");
+  public Todo toTodo(CreateTodoRequest createTodoRequest) {
+    Assert.notNull(createTodoRequest, "CreateTodoRequest must not be null");
 
     return Todo.builder()
-        .description(todoRequest.description())
+        .description(createTodoRequest.description())
         .build();
   }
 

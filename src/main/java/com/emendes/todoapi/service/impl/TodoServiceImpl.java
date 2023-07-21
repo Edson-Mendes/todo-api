@@ -1,6 +1,6 @@
 package com.emendes.todoapi.service.impl;
 
-import com.emendes.todoapi.dto.request.TodoRequest;
+import com.emendes.todoapi.dto.request.CreateTodoRequest;
 import com.emendes.todoapi.dto.request.UpdateTodoRequest;
 import com.emendes.todoapi.dto.response.TodoResponse;
 import com.emendes.todoapi.mapper.TodoMapper;
@@ -33,10 +33,10 @@ public class TodoServiceImpl implements TodoService {
   private final TodoRepository todoRepository;
 
   @Override
-  public TodoResponse save(TodoRequest todoRequest) {
+  public TodoResponse save(CreateTodoRequest createTodoRequest) {
     log.info("attempt to save todo");
 
-    Todo todo = todoMapper.toTodo(todoRequest);
+    Todo todo = todoMapper.toTodo(createTodoRequest);
     User currentUser = authenticationFacade.getCurrentUser();
 
     todo.setConcluded(false);
