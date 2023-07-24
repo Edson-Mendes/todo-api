@@ -17,6 +17,7 @@ public class SecurityConfig {
   public static final String ROLE_USER = "ROLE_USER";
   private final AuthenticationProvider authenticationProvider;
   private static final String[] POST_WHITELISTING = {"/api/users"};
+  private static final String[] GET_WHITELISTING = {"/api/images/*"};
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,6 +28,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
         authorize -> {
           authorize.requestMatchers(HttpMethod.POST, POST_WHITELISTING).permitAll();
+          authorize.requestMatchers(HttpMethod.GET, GET_WHITELISTING).permitAll();
           authorize.anyRequest().authenticated();
         }
     );

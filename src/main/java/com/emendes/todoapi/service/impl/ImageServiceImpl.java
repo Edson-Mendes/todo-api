@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.util.InMemoryResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,6 +34,7 @@ public class ImageServiceImpl implements ImageService {
    */
   @Override
   public URI store(MultipartFile file) {
+    log.info("attempt to store image");
     // TODO: Validar o parâmentro file.
     try {
       Binary binaryFile = new Binary(BsonBinarySubType.BINARY, file.getBytes());
@@ -43,11 +46,26 @@ public class ImageServiceImpl implements ImageService {
 
       imageRepository.save(image);
 
+      log.info("image with id: {} stored successful", image.getId());
       return URI.create(String.format(URI_IMAGE_TEMPLATE, image.getId()));
     } catch (IOException ioException) {
+      log.info("File access error - Exception message: {}", ioException.getMessage());
       throw new ResponseStatusException(HttpStatusCode.valueOf(500), "File access error");
     }
 
+  }
+
+  @Override
+  public Resource findById(String imageId) {
+    log.info("attempt to fetch image with id: {}", imageId);
+
+    Image image = imageRepository.findById(imageId)
+        .orElseThrow(() -> {
+          log.info("image not found for id: {}", imageId);
+          return new ResponseStatusException(HttpStatusCode.valueOf(400), "Image not found");
+        });
+
+    return new InMemoryResource(image.getFile().getData());
   }
 
 }
