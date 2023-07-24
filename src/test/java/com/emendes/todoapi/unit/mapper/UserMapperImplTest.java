@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
@@ -57,6 +58,7 @@ class UserMapperImplTest {
         .name("Lorem Ipsum")
         .email("lorem@email.com")
         .password("1234567890")
+        .uriImage(URI.create("/api/images/1234567890"))
         .creationDate(LocalDateTime.parse("2023-07-05T10:30:00").truncatedTo(ChronoUnit.SECONDS))
         .authorities(Set.of("ROLE_USER"))
         .build();
@@ -67,6 +69,8 @@ class UserMapperImplTest {
     Assertions.assertThat(actualUserResponse.id()).isNotNull().isEqualTo("asdmpimuoibvuysdubvausbdinv");
     Assertions.assertThat(actualUserResponse.name()).isNotNull().isEqualTo("Lorem Ipsum");
     Assertions.assertThat(actualUserResponse.email()).isNotNull().isEqualTo("lorem@email.com");
+    Assertions.assertThat(actualUserResponse.uriImage()).isNotNull()
+        .isEqualByComparingTo(URI.create("/api/images/1234567890"));
     Assertions.assertThat(actualUserResponse.creationDate()).isNotNull().isEqualTo("2023-07-05T10:30:00");
   }
 

@@ -60,6 +60,7 @@ public class UserFaker {
         .id("abcdef")
         .name("Lorem Ipsum")
         .email("lorem@email.com")
+        .uriImage(ImageFaker.uri())
         .creationDate(LocalDateTime.parse("2023-07-05T10:30:00").truncatedTo(ChronoUnit.SECONDS))
         .build();
   }
