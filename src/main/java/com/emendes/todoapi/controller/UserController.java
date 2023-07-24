@@ -6,9 +6,12 @@ import com.emendes.todoapi.service.UserService;
 import com.emendes.todoapi.util.annotation.IdValidation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -16,6 +19,7 @@ import java.net.URI;
 /**
  * Controller o qual é mapeado as requisições de /api/users.
  */
+@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -28,11 +32,15 @@ public class UserController {
    * Trata requisição POST /api/users.
    *
    * @param userRequest DTO que contém as informações do User a ser registrado.
+   * @param file        imagem do User.
    */
-  @PostMapping
+  @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<UserResponse> register(
-      @RequestBody @Valid RegisterUserRequest userRequest, UriComponentsBuilder uriBuilder) {
-    UserResponse userResponse = userService.register(userRequest);
+      @RequestPart("image") MultipartFile file,
+      @RequestPart("model") @Valid RegisterUserRequest userRequest,
+      UriComponentsBuilder uriBuilder) {
+    UserResponse userResponse = userService.register(userRequest, file);
+
     URI uri = uriBuilder.path("/api/users/{id}").build(userResponse.id());
 
     return ResponseEntity.created(uri).body(userResponse);

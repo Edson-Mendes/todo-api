@@ -5,6 +5,7 @@ import com.emendes.todoapi.dto.response.UserResponse;
 import com.emendes.todoapi.mapper.UserMapper;
 import com.emendes.todoapi.model.User;
 import com.emendes.todoapi.repository.UserRepository;
+import com.emendes.todoapi.service.ImageService;
 import com.emendes.todoapi.service.UserService;
 import com.emendes.todoapi.util.component.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -31,13 +33,14 @@ public class UserServiceImpl implements UserService {
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final AuthenticationFacade authenticationFacade;
+  private final ImageService imageService;
 
   /**
    * @throws ResponseStatusException caso RegisterUserRequest.password e RegisterUserRequest.confirmPassword não correspondem.
    *                                 Ou caso o email informado já esteja associado a um User.
    */
   @Override
-  public UserResponse register(RegisterUserRequest registerUserRequest) {
+  public UserResponse register(RegisterUserRequest registerUserRequest, MultipartFile file) {
     if (!registerUserRequest.passwordsMatch()) {
       log.info("password and confirm_password do not match");
       throw new ResponseStatusException(
@@ -53,6 +56,7 @@ public class UserServiceImpl implements UserService {
 
     User user = userMapper.toUser(registerUserRequest);
 
+    user.setUriImage(imageService.store(file));
     user.addAuthority(ROLE_USER);
     user.setCreationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
     user.setPassword(passwordEncoder.encode(user.getPassword()));
